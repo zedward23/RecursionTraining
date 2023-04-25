@@ -12,7 +12,7 @@ public class FactoryBehavior : MonoBehaviour
         
     }
 
-    // Update is called once per frame
+    // Update is called once per frameF
     void Update()
     {
         
@@ -25,11 +25,47 @@ public class FactoryBehavior : MonoBehaviour
         {
             string haha = collision.gameObject.GetComponent<VehicleBehavior>().id;
             Debug.Log("id:" + haha);
+
+            string payload = collision.gameObject.GetComponent<VehicleBehavior>().getPayload();
+
+            Debug.Log("Payload: " + payload);
+
+            char[] newString = "".ToCharArray();
+
+            bool submit = false;
+
+            bool currVerdict = Logic1(payload.ToCharArray(), ref newString, ref submit);
+
+            string newPayload = new string(newString);
+            Debug.Log(newString.Length);
+
+            if (newString.Length == 0)
+            {
+                submit = true;
+            }
+
+            print("submit?" + submit);
+
             collision.gameObject.GetComponent<VehicleBehavior>().Kill();
 
+            output.transform.position = new Vector3(3.52f, 1.74f, 0f);
             GameObject newCreation = Instantiate(output);
+            newCreation.GetComponent<VehicleBehavior>().setPayload(newPayload);
+            newCreation.GetComponent<VehicleBehavior>().setReviewStatus(submit);
+            newCreation.GetComponent<VehicleBehavior>().setVerdict(currVerdict);
+
+
+
+            Debug.Log("old string: " + payload);
+            Debug.Log("new string: " + new string(newString));
+
+            
+
+            
+            //newCreation.GetComponent<VehicleBehavior>().setPayload(newString.ToString());
+
             Debug.Log("created");
-            newCreation.transform.position = new Vector3(3.14f, 1.88f, 0f);
+            
         }
         /**/
     }
@@ -42,15 +78,28 @@ public class FactoryBehavior : MonoBehaviour
     //case2:....
 
 
-    void Logic1(List<string> info)
-    {
+    bool Logic1(char[] input, ref char[] output, ref bool submit) {
+    
         //Logic here - example for correct ForLoop implementation
-        int currNum = Int32.Parse(info[0]);
-        //Global.money -= $$
-        if (currNum == 0)
+        
+        if (!BaseCase1(input))
         {
-            BaseCase1(info);
+            if (input[0] == input[input.Length - 1])
+            {
+                output = new List<char>(input).GetRange(1, input.Length - 2).ToArray();
+                return true;
+                
+            } else {
+                submit = true;
+                return false;
+            }
+        } else
+        {
+            submit = true;
+            return true;
         }
+
+
         //Spawn new Vehicle
         //Instantiate new Vehicle(currNum-1)
     }
@@ -67,12 +116,17 @@ public class FactoryBehavior : MonoBehaviour
     {
 
     }
-    List<string> BaseCase1(List<string> info)
+    bool BaseCase1(char[] input)
     {
-        Debug.Log("Yerp this is indeed the basecase");
-        List<string> ret = new List<string>();
-        ret.Add("");
-        return ret;
+        Debug.Log("Base case check:" + new string(input));
+        if (input.Length == 1)
+        {
+            return true;
+        } else
+        {
+            return false;
+        }
+        
     }
     void BaseCase2()
     {
