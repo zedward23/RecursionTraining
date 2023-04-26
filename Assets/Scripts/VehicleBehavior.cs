@@ -75,8 +75,6 @@ public class VehicleBehavior : MonoBehaviour
     {
         //instantiate vars
         Vehicle(id, input);
-        gameObject.GetComponent<NavMeshAgent>().enabled = true;
-        agent.SetDestination(gameObject.transform.position);
     }
 
     // Update is called once per frame

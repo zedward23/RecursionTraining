@@ -23,19 +23,32 @@ public class GlobalBehavior : MonoBehaviour
 
     public static bool playing = false;
 
-    private static int globalCount = 0;
+    private static int globalCount;
 
+    public int testCaseIdx;
+
+    [SerializeField]
+    public int cash_local;
+    public static int cash;
+
+    private Text balance;
 
     public string OriginalPayload;
 
-    private void Awake()
-    {
-        
-    }
+    public string[] testCase;
+
 
     // Start is called before the first frame update
     void Start()
     {
+        cash = cash_local;
+        balance = GameObject.Find("Balance").GetComponent<Text>();
+        testCase = new string[9] { "ABA", "ABB", "A", "ABAA", "BA", "ABBABBBBA", "ABBA", "AAA", "ABABABABBA" };
+        testCaseIdx = 0;
+        Debug.Log(testCase.Length);
+
+        OriginalPayload = "ABBBA";
+
         VehicleBehavior.originalPayload = OriginalPayload;
         id = globalCount;
         globalCount += 1;
@@ -55,6 +68,7 @@ public class GlobalBehavior : MonoBehaviour
         newCreation.GetComponent<VehicleBehavior>().setPayload(VehicleBehavior.originalPayload);
         newCreation.GetComponent<VehicleBehavior>().setVerdict(true);
 
+        GameObject.Find("RecursiveCall").GetComponent<Image>().color = new Color(255f, 255f, 255f);
         playing = false;
     }
 
@@ -84,15 +98,22 @@ public class GlobalBehavior : MonoBehaviour
         GlobalBehavior.playing = !GlobalBehavior.playing;
     }
 
-    public void reload(Dropdown d)
+    public void reload()
     {
-        this.recursiveInputIdx = d.value + 1;
-        SceneManager.LoadScene("RecursionScene", LoadSceneMode.Single);
+        SceneManager.LoadScene("RecursionScene", LoadSceneMode.Single);   
     }
+
 
     // Update is called once per frame
     void Update()
     {
+        if (cash < 0)
+        {
+            balance.text = "BANKRUPT";
+        } else
+        {
+            balance.text = "Cash Balance: $" + cash;
+        }
         
     }
 }

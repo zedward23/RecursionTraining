@@ -21,12 +21,27 @@ public class ReviewerBehavior : MonoBehaviour
         if (collision.gameObject.GetComponent<VehicleBehavior>() != null)
         {
             bool verdict = collision.gameObject.GetComponent<VehicleBehavior>().getVerdict();
-            collision.gameObject.GetComponent<VehicleBehavior>().Kill();
+            collision.gameObject.transform.position = new Vector3(collision.gameObject.transform.position.x + 10000, collision.gameObject.transform.position.y, collision.gameObject.transform.position.z);
 
             Debug.Log("Verdict: " + verdict);
             Debug.Log("Ground Truth: " + getStatus(VehicleBehavior.originalPayload));
 
-            Debug.Log("Are you getting paid? " + (verdict == getStatus(VehicleBehavior.originalPayload)));
+            GlobalBehavior global = GameObject.FindGameObjectWithTag("Player").GetComponent<GlobalBehavior>();
+
+            //if (global.testCaseIdx < global.testCase.Length-1)
+            //{
+            //    global.testCaseIdx += 1;
+            //    GameObject.FindGameObjectWithTag("Player").GetComponent<GlobalBehavior>().reload();
+            //}
+            
+
+            if ((verdict == getStatus(VehicleBehavior.originalPayload))){
+                GlobalBehavior.cash += 12000;
+            } else
+            {
+                GlobalBehavior.cash -= 8000;
+            }
+                
         }
     }
 
