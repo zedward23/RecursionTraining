@@ -21,6 +21,9 @@ public class VehicleBehavior : MonoBehaviour
     private GameObject uiLabel;
 
     [SerializeField]
+    private GameObject image;
+
+    [SerializeField]
     private Vector3 offset;
 
     public NavMeshAgent agent;
@@ -37,6 +40,7 @@ public class VehicleBehavior : MonoBehaviour
         this.input = newInput;
         this.cam = Camera.main;
         uiLabel.SetActive(false);
+        image.SetActive(false);
         agent = GetComponent<NavMeshAgent>();
         agent.enabled = false;
         agent.updateRotation = false;
@@ -82,6 +86,7 @@ public class VehicleBehavior : MonoBehaviour
     {
         if (GlobalBehavior.playing)
         {
+            
             if (submitForReview)
             {
                 Vector3 currPos = gameObject.transform.position;
@@ -106,11 +111,13 @@ public class VehicleBehavior : MonoBehaviour
     private void OnMouseOver()
     {
         uiLabel.SetActive(true);
+        image.SetActive(true);
         Vector3 screenPos = Camera.main.WorldToScreenPoint(gameObject.transform.position);
         Debug.Log("Input is: " + input);
         Debug.Log("Screen Space Coords are" + screenPos);
 
-        uiLabel.transform.position = screenPos + offset;
+        image.transform.position = screenPos + offset + new Vector3(0f, 70f, 0f);
+        //uiLabel.transform.position = screenPos + offset;
         uiLabel.GetComponent<Text>().text = "Payload: " + this.input.ToString();
     }
 
@@ -122,6 +129,7 @@ public class VehicleBehavior : MonoBehaviour
     private void OnMouseExit()
     {
         uiLabel.SetActive(false);
+        image.SetActive(false);
     }
 
     private void OnMouseDown()

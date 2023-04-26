@@ -41,6 +41,7 @@ public class ReviewerBehavior : MonoBehaviour
                     GlobalBehavior.testCaseIdx = global.testCase.Length;
                 }
             }
+            gameObject.GetComponent<AudioSource>().Play(0);
 
             GlobalBehavior.total += 1;
 

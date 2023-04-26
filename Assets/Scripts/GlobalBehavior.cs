@@ -41,6 +41,8 @@ public class GlobalBehavior : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        
+
         switch (SceneManager.GetActiveScene().buildIndex) {
             case 2:
                 GameObject.Find("CanvasDynamic").SetActive(true);
