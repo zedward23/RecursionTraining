@@ -17,21 +17,21 @@ public class GlobalBehavior : MonoBehaviour
     
     public int recursiveCallIdx;
 
-    private Dropdown[] dropdowns;
-
     private int id;
 
     public static bool playing = false;
 
     private static int globalCount;
 
-    public int testCaseIdx;
+    public static int testCaseIdx;
 
-    [SerializeField]
-    public int cash_local;
-    public static int cash;
+    public static int cash = 10000;
+
+    public static int correct;
+    public static int total;
 
     private Text balance;
+    private Text score;
 
     public string OriginalPayload;
 
@@ -41,22 +41,39 @@ public class GlobalBehavior : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        cash = cash_local;
-        balance = GameObject.Find("Balance").GetComponent<Text>();
-        testCase = new string[9] { "ABA", "ABB", "A", "ABAA", "BA", "ABBABBBBA", "ABBA", "AAA", "ABABABABBA" };
-        testCaseIdx = 0;
-        Debug.Log(testCase.Length);
+        switch (SceneManager.GetActiveScene().buildIndex) {
+            case 2:
+                GameObject.Find("CanvasDynamic").SetActive(true);
+                GameObject.Find("CanvasStatic").SetActive(false);
+                break;
+            case 3:
+                GameObject.Find("CanvasDynamic").SetActive(false);
+                GameObject.Find("CanvasStatic").SetActive(true);
+                break;
+            default:
+                GameObject.Find("CanvasDynamic").SetActive(false);
+                GameObject.Find("CanvasStatic").SetActive(false);
+                break;
+                
+        }
 
-        OriginalPayload = "ABBBA";
+        balance = GameObject.Find("Balance").GetComponent<Text>();
+        score = GameObject.Find("Score").GetComponent<Text>();
+        testCase = new string[9] { "ABA", "ABB", "A", "ABAA", "BA", "ABBABBBBA", "ABBA", "AAA", "ABABABABBA" };
+        
+        OriginalPayload = testCase[testCaseIdx];
 
         VehicleBehavior.originalPayload = OriginalPayload;
         id = globalCount;
         globalCount += 1;
-        if (this.id > 0)
+        
+        DontDestroyOnLoad(this.gameObject);
+
+        if (this.id > 0 || SceneManager.GetActiveScene().buildIndex != 2)
         {
             Destroy(gameObject);
         }
-        DontDestroyOnLoad(this.gameObject);
+        
         this.baseCaseIdx = 1;
         this.recursiveInputIdx = 1;
         this.recursiveCallIdx = 1;
@@ -103,17 +120,31 @@ public class GlobalBehavior : MonoBehaviour
         SceneManager.LoadScene("RecursionScene", LoadSceneMode.Single);   
     }
 
+    public void fullReload()
+    {
+        SceneManager.LoadScene("RecursionScene", LoadSceneMode.Single);
+        total = 0;
+        correct = 0;
+        testCaseIdx = 0;
+    }
+
 
     // Update is called once per frame
     void Update()
     {
+        if (SceneManager.GetActiveScene().buildIndex != 2)
+        {
+            Destroy(gameObject);
+        }
         if (cash < 0)
         {
             balance.text = "BANKRUPT";
+            
         } else
         {
             balance.text = "Cash Balance: $" + cash;
         }
-        
+
+        score.text = correct + "/" + total + " orders processed correctly";
     }
 }

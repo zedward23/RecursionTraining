@@ -28,20 +28,31 @@ public class ReviewerBehavior : MonoBehaviour
 
             GlobalBehavior global = GameObject.FindGameObjectWithTag("Player").GetComponent<GlobalBehavior>();
 
-            //if (global.testCaseIdx < global.testCase.Length-1)
-            //{
-            //    global.testCaseIdx += 1;
-            //    GameObject.FindGameObjectWithTag("Player").GetComponent<GlobalBehavior>().reload();
-            //}
-            
-
-            if ((verdict == getStatus(VehicleBehavior.originalPayload))){
+            if ((verdict == getStatus(VehicleBehavior.originalPayload)))
+            {
                 GlobalBehavior.cash += 12000;
-            } else
+                GlobalBehavior.correct += 1;
+            }
+            else
             {
                 GlobalBehavior.cash -= 8000;
+                if (GlobalBehavior.cash < 0)
+                {
+                    GlobalBehavior.testCaseIdx = global.testCase.Length;
+                }
             }
-                
+
+            GlobalBehavior.total += 1;
+
+            if (GlobalBehavior.testCaseIdx < global.testCase.Length-1)
+            {
+                GlobalBehavior.testCaseIdx += 1;
+                GameObject.FindGameObjectWithTag("Player").GetComponent<GlobalBehavior>().reload();
+            }
+            
+
+            
+
         }
     }
 

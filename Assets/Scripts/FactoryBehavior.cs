@@ -22,6 +22,8 @@ public class FactoryBehavior : MonoBehaviour
         this.global = GameObject.FindGameObjectWithTag("Player");
         
 
+
+
     }
 
     // Update is called once per frame
@@ -47,6 +49,10 @@ public class FactoryBehavior : MonoBehaviour
             char[] oldString = payload.ToCharArray();
 
             GlobalBehavior.cash -= (int)(GlobalBehavior.cash / (oldString.Length * 1.8));
+            if (GlobalBehavior.cash < 0)
+            {
+                GlobalBehavior.testCaseIdx = GameObject.FindGameObjectWithTag("Player").GetComponent<GlobalBehavior>().testCase.Length;
+            }
 
             bool submit = false;
 
