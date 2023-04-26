@@ -23,9 +23,13 @@ public class VehicleBehavior : MonoBehaviour
     [SerializeField]
     private Vector3 offset;
 
-    private NavMeshAgent agent;
+    public NavMeshAgent agent;
 
     public string id;
+
+    public static string originalPayload;
+
+    
 
     public void Vehicle(string newId, string newInput)
     {
@@ -34,6 +38,7 @@ public class VehicleBehavior : MonoBehaviour
         this.cam = Camera.main;
         uiLabel.SetActive(false);
         agent = GetComponent<NavMeshAgent>();
+        agent.enabled = false;
         agent.updateRotation = false;
         agent.updateUpAxis = false;
     }
@@ -70,28 +75,32 @@ public class VehicleBehavior : MonoBehaviour
     {
         //instantiate vars
         Vehicle(id, input);
-
-        //transform.position = new Vector3(3.32f, 1.78f, 0f);
-        
-
+        gameObject.GetComponent<NavMeshAgent>().enabled = true;
+        agent.SetDestination(gameObject.transform.position);
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        
-        //If clicked, unhide an ui elt
-        if (submitForReview)
+        if (GlobalBehavior.playing)
         {
-            Vector3 currPos = gameObject.transform.position;
+            if (submitForReview)
+            {
+                Vector3 currPos = gameObject.transform.position;
+                gameObject.GetComponent<NavMeshAgent>().enabled = false;
+                gameObject.transform.position = new Vector3(currPos.x + .05f, currPos.y, currPos.z);
+                input = VehicleBehavior.originalPayload;
+
+            }
+            else
+            {
+                gameObject.GetComponent<NavMeshAgent>().enabled = true;
+                Vector3 destination = new Vector3(-2.98f, 1.87f, 0);
+                agent.SetDestination(destination);
+            }
+        } else
+        {
             gameObject.GetComponent<NavMeshAgent>().enabled = false;
-            gameObject.transform.position = new Vector3(currPos.x + .01f, currPos.y, currPos.z);
-        }
-        else
-        {
-            gameObject.GetComponent<NavMeshAgent>().enabled = true;
-            Vector3 destination = new Vector3(-2.98f, 1.87f, 0);
-            agent.SetDestination(destination);
         }
 
     }

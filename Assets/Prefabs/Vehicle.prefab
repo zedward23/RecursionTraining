@@ -195,7 +195,7 @@ GameObject:
   - component: {fileID: 4755384672705773076}
   m_Layer: 0
   m_Name: Vehicle
-  m_TagString: Untagged
+  m_TagString: Vehicle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -208,7 +208,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4755384672705773070}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.21937, y: 0.85735726, z: -0.8020382}
+  m_LocalPosition: {x: 3.52, y: 1.74, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4755384672145989610}
@@ -281,6 +281,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   input: 6
   cam: {fileID: 0}
+  submitForReview: 0
   uiLabel: {fileID: 4755384672083635050}
   offset: {x: 0, y: 50, z: 0}
   id: yaMum

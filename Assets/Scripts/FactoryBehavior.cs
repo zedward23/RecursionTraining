@@ -6,10 +6,23 @@ using System;
 public class FactoryBehavior : MonoBehaviour
 {
     public GameObject output;
+
+    private int baseCaseIdx;
+    private int recursiveInputIdx;
+    private int recursiveCallIdx;
+    
+    
+
+    GameObject global;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        this.global = GameObject.FindGameObjectWithTag("Player");
+        this.baseCaseIdx = global.GetComponent<GlobalBehavior>().baseCaseIdx;
+        this.recursiveInputIdx = global.GetComponent<GlobalBehavior>().recursiveInputIdx;
+        this.recursiveCallIdx = global.GetComponent<GlobalBehavior>().baseCaseIdx;
+
     }
 
     // Update is called once per frameF
@@ -20,7 +33,6 @@ public class FactoryBehavior : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log("Look ma i'm in a trigger");
         if (collision.gameObject.GetComponent<VehicleBehavior>() != null)
         {
             string haha = collision.gameObject.GetComponent<VehicleBehavior>().id;
@@ -34,7 +46,23 @@ public class FactoryBehavior : MonoBehaviour
 
             bool submit = false;
 
-            bool currVerdict = Logic1(payload.ToCharArray(), ref newString, ref submit);
+            bool currVerdict;
+
+            switch (recursiveCallIdx)
+            {
+                case 2:
+                    currVerdict = Logic1(payload.ToCharArray(), ref newString, ref submit);
+                    break;
+                case 1:
+                    currVerdict = Logic2(payload.ToCharArray(), ref newString, ref submit);
+                    break;
+                case 3:
+                    currVerdict = Logic3(payload.ToCharArray(), ref newString, ref submit);
+                    break;
+                default:
+                    currVerdict = true;
+                    break;
+            }
 
             string newPayload = new string(newString);
             Debug.Log(newString.Length);
@@ -44,100 +72,137 @@ public class FactoryBehavior : MonoBehaviour
                 submit = true;
             }
 
-            print("submit?" + submit);
-
             collision.gameObject.GetComponent<VehicleBehavior>().Kill();
 
             output.transform.position = new Vector3(3.52f, 1.74f, 0f);
             GameObject newCreation = Instantiate(output);
-            newCreation.GetComponent<VehicleBehavior>().setPayload(newPayload);
+            
             newCreation.GetComponent<VehicleBehavior>().setReviewStatus(submit);
+            
+            if (submit)
+            {
+                newCreation.GetComponent<VehicleBehavior>().setPayload(VehicleBehavior.originalPayload);
+            } else
+            {
+                newCreation.GetComponent<VehicleBehavior>().setPayload(newPayload);
+            }
+
             newCreation.GetComponent<VehicleBehavior>().setVerdict(currVerdict);
 
 
 
             Debug.Log("old string: " + payload);
             Debug.Log("new string: " + new string(newString));
-
-            
-
-            
-            //newCreation.GetComponent<VehicleBehavior>().setPayload(newString.ToString());
-
-            Debug.Log("created");
-            
         }
         /**/
     }
-    //On Collision Enter(Vehicle v){
-    //auto info = v.getInfo
-    //v.destory()
-    //switch(global.useChoice):
-    //case1:
-    // Logic1(info)
-    //case2:....
 
+    bool evalBaseCase(char[] input)
+    {
+        switch (this.baseCaseIdx)
+        {
+            case 1:
+                return input.Length == 1;
+            case 2:
+                return input.Length == 2;
+            case 3:
+                return input[0] == input[input.Length - 1];
+            default:
+                return false;
+        }
+    }
+
+    char[] recursiveOutput(char[] input)
+    {
+        if (input.Length <= 1)
+        {
+            return input;
+        }
+        switch (this.recursiveInputIdx)
+        {
+            case 3:
+                return new List<char>(input).GetRange(1, input.Length).ToArray();
+            case 1:
+                return new List<char>(input).GetRange(1, input.Length - 1).ToArray();
+            case 2:
+                return new List<char>(input).GetRange(0, input.Length - 1).ToArray();
+            default:
+                return input;
+        }
+        
+    }
 
     bool Logic1(char[] input, ref char[] output, ref bool submit) {
-    
-        //Logic here - example for correct ForLoop implementation
-        
-        if (!BaseCase1(input))
-        {
-            if (input[0] == input[input.Length - 1])
-            {
-                output = new List<char>(input).GetRange(1, input.Length - 2).ToArray();
-                return true;
-                
-            } else {
-                submit = true;
-                return false;
-            }
-        } else
+        if (evalBaseCase(input))
         {
             submit = true;
             return true;
         }
 
-
-        //Spawn new Vehicle
-        //Instantiate new Vehicle(currNum-1)
+        //Case 1 Check
+        if (input[0] == input[input.Length - 1])
+        {
+            output = recursiveOutput(input);
+            return true;
+            
+        } else {
+            submit = true;
+            return false;
+        }
     }
-    void Logic2()
+    bool Logic2(char[] input, ref char[] output, ref bool submit)
     {
+        if (evalBaseCase(input))
+        {
+            submit = true;
+            return true;
+        }
 
+        //Case 2 Check
+        if (input.Length% 2 == 0)
+        {
+            output = output = recursiveOutput(input);
+            return true;
+
+        }
+        else
+        {
+            submit = true;
+            return false;
+        }
     }
 
-    void Logic3()
+    bool Logic3(char[] input, ref char[] output, ref bool submit)
     {
+        if (evalBaseCase(input))
+        {
+            submit = true;
+            return true;
+        }
+
+        if (input.Length < 1)
+        {
+            output = new char['@'];
+            submit = false;
+            return false;
+        }
+
+        //Case 3 Check
+        if (input[0] == input[1])
+        {
+            output = recursiveOutput(input);
+            return true;
+        }
+        else
+        {
+            submit = true;
+            return false;
+        }
 
     }
     void Logic4()
     {
 
     }
-    bool BaseCase1(char[] input)
-    {
-        Debug.Log("Base case check:" + new string(input));
-        if (input.Length == 1)
-        {
-            return true;
-        } else
-        {
-            return false;
-        }
-        
-    }
-    void BaseCase2()
-    {
-
-    }
-    void BaseCase3()
-    {
-
-    }
-    void BaseCase4()
-    {
-
-    }
+ 
 }
