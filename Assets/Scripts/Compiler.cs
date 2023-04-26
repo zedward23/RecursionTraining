@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using System;
 
 public class Compiler : MonoBehaviour
@@ -46,22 +47,30 @@ public class Compiler : MonoBehaviour
         this.expected = GameObject.Find("Expected").GetComponent<Text>();
     }
 
+    public void fullReload()
+    {
+        SceneManager.LoadScene("StaticScene", LoadSceneMode.Single);
+        total = 0;
+        correct = 0;
+        testCaseIdx = 5;
+    }
+
     public void baseCaseChosen(Dropdown d)
     {
         this.baseCaseIdx = d.value + 1;
-        evaluate(testCase[testCaseIdx]);
+        //evaluate(testCase[testCaseIdx]);
     }
 
     public void recCallChosen(Dropdown d)
     {
         this.recursiveCallIdx = d.value + 1;
-        evaluate(testCase[testCaseIdx]);
+        //evaluate(testCase[testCaseIdx]);
     }
 
     public void recInputChosen(Dropdown d)
     {
         this.recursiveInputIdx = d.value + 1;
-        evaluate(testCase[testCaseIdx]);
+        //evaluate(testCase[testCaseIdx]);
     }
 
     public void next()
@@ -78,6 +87,7 @@ public class Compiler : MonoBehaviour
         globalSubmit = false;
         bool currVerdict;
 
+        
         switch (recursiveCallIdx)
         {
             case 2:
@@ -96,24 +106,26 @@ public class Compiler : MonoBehaviour
                 currVerdict = true;
                 break;
         }
+        
 
         string newPayload = new string(newString);
-        if (!globalSubmit && Compiler.counter < 1000)
-        {
-            evaluate(newPayload);
-        }
-
         counter += 1;
 
         if (globalSubmit)
         {
-            currVerdict = globalVerdict;
+            globalVerdict = currVerdict;
             Debug.Log(testCase[testCaseIdx] + " is a palindrome: " + globalVerdict);
+            updateText();
             counter = 0;
             if (testCaseIdx < testCase.Length - 1)
             {
+                Debug.Log(testCaseIdx);
                 testCaseIdx += 1;
+                globalSubmit = false;
             }
+        } else
+        {
+            evaluate(newPayload);
         }
     }
 
@@ -130,12 +142,17 @@ public class Compiler : MonoBehaviour
         return first.Equals(second);
     }
 
-    // Update is called once per frame
-    void Update()
+    void updateText()
     {
         currTest.text = "Input: \n" + testCase[testCaseIdx];
         actual.text = "Actual Output: \n" + globalVerdict;
         expected.text = "Expected Output: \n" + getStatus(testCase[testCaseIdx]);
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
     }
 
     bool evalBaseCase(char[] input)
@@ -181,12 +198,17 @@ public class Compiler : MonoBehaviour
             submit = true;
             return true;
         }
-
-        Debug.Log(new string(input));
+        Debug.Log("IDX" + testCaseIdx);
+        Debug.Log("How the fuck: "+new string(input));
 
         //Case 1 Check
         if (input[0] == input[input.Length - 1])
         {
+            if (input.Length == 2)
+            {
+                submit = true;
+                return true;
+            }
             output = recursiveOutput(input);
             return true;
 
@@ -208,7 +230,15 @@ public class Compiler : MonoBehaviour
         //Case 2 Check
         if (input.Length % 2 == 0)
         {
-            output = recursiveOutput(input);
+            if (input.Length > 0)
+            {
+                output = recursiveOutput(input);
+            } else
+            {
+                output = input;
+                submit = true;
+            }
+            
             return true;
 
         }
