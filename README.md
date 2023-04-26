@@ -33,6 +33,6 @@ The project seeks to explore how games can leverage their interactivity and abil
 using computer graphics to teach abstract concepts in manners that go beyond the standard schools of 
 thought in serious games such as immersion or competitivity.
 
-Play the game [here](https://zedward23.itch.io/recursion-rumble)
+Play the game [here](https://zedward23.itch.io/recursion-rumble).
 
-Read the thesis [here](https://docs.google.com/document/d/11AQ29ZNawKMt26kBIbKYELt8KqixL34OpPnEdhE7doQ/edit?usp=sharing) 
+Read the thesis [here](https://docs.google.com/document/d/11AQ29ZNawKMt26kBIbKYELt8KqixL34OpPnEdhE7doQ/edit?usp=sharing).
