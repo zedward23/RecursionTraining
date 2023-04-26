@@ -1,0 +1,37 @@
+---
+title: "WH299 Data Processing"
+author: "Edward Zhang"
+date: "2023-03-30"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(caret)
+library(tidyverse)
+library(ggpubr)
+```
+
+## Data Cleaning
+
+```{r Clean_Data}
+df <- read.csv("WH299_Data_real.csv")
+data <- subset(df, select = -c(1, 4,5,6,7,8,10,11,12,13,14,15,17))
+
+data <- data %>% mutate(data, delta = Post.Test.Scores - Pre.Test.Scores)
+
+data_final <- data %>% rename("version" = Which.version.of.the.lesson.did.you.take.,
+                              "priorExp" = Have.you.learned.of.recursion.prior.to.this.experiment.,
+                              "pre" = Pre.Test.Scores,
+                              "post" = Post.Test.Scores)
+
+```
+
+## T-Test + Plots
+
+```{r T-Test}
+attach(data_final)
+boxplot(delta ~ version, main="Score Deltas vs Treatment Type")
+t.test(delta ~ version, mu = 0, alt="two.sided", conf=.95, var.eq=T, paired=F)
+```
