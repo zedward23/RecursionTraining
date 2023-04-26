@@ -28,8 +28,24 @@ data_final <- data %>% rename("version" = Which.version.of.the.lesson.did.you.ta
 
 ```
 
-## T-Test + Plots
+## Sample Summaries
+```{r Summaries}
+#Dynamic
+dynamic <- data_final[1:4,]
+summary(dynamic)
+jpeg("dynamic_sample.jpeg")
+hist(data=dynamic, x=dynamic$delta, main="Dynamic Sample")
+dev.off()
 
+#Static
+static <- data_final[5:6,]
+summary(static)
+jpeg("static_sample.jpeg")
+hist(data=static, x=static$delta, main="Static Sample")
+dev.off()
+```
+
+## T-Test + Plots
 ```{r T-Test}
 attach(data_final)
 boxplot(delta ~ version, main="Score Deltas vs Treatment Type")
