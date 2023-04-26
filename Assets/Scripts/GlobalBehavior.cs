@@ -17,7 +17,7 @@ public class GlobalBehavior : MonoBehaviour
     
     public int recursiveCallIdx;
 
-    private int id;
+    public int id;
 
     public static bool playing = false;
 
@@ -67,13 +67,15 @@ public class GlobalBehavior : MonoBehaviour
         id = globalCount;
         globalCount += 1;
         
-        DontDestroyOnLoad(this.gameObject);
 
-        if (this.id > 0 || SceneManager.GetActiveScene().buildIndex != 2)
+        if (GameObject.FindGameObjectWithTag("Player") != null && (
+            GameObject.FindGameObjectWithTag("Player").GetComponent<GlobalBehavior>().id < this.id || SceneManager.GetActiveScene().buildIndex != 2))
         {
             Destroy(gameObject);
         }
-        
+
+        DontDestroyOnLoad(this.gameObject);
+
         this.baseCaseIdx = 1;
         this.recursiveInputIdx = 1;
         this.recursiveCallIdx = 1;
@@ -126,6 +128,7 @@ public class GlobalBehavior : MonoBehaviour
         total = 0;
         correct = 0;
         testCaseIdx = 0;
+        cash = 10000;
     }
 
 
